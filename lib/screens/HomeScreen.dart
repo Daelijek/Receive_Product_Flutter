@@ -21,7 +21,7 @@ class HomeScreen extends StatelessWidget {
               title: product['title'],
               description: product['description'],
               imageUrl: product['imageUrl'],
-              price: '\$${product['price'].toStringAsFixed(2)}',
+              price: product['price'],
             );
           },
         ),

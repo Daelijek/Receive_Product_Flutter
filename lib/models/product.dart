@@ -2,13 +2,15 @@ class Product {
   final String title;
   final String description;
   final String imageUrl;
-  final String price;
+  final double price;
+  int quantity;
 
   Product({
     required this.title,
     required this.description,
     required this.imageUrl,
     required this.price,
+    this.quantity = 1,
   });
 
   factory Product.fromMap(Map<String, dynamic> map) {
@@ -17,6 +19,7 @@ class Product {
       description: map['description'],
       imageUrl: map['imageUrl'],
       price: map['price'],
+      quantity: map['quantity'] ?? 1,
     );
   }
 }

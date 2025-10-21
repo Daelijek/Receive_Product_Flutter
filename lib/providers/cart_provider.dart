@@ -7,7 +7,12 @@ class CartProvider with ChangeNotifier {
   List<Product> get items => _items;
 
   void addToCart(Product product) {
-    _items.add(product);
+    final index = _items.indexWhere((item) => item.title == product.title);
+    if (index >= 0) {
+      _items[index].quantity += 1;
+    } else {
+      _items.add(product);
+    }
     notifyListeners();
   }
 
@@ -16,11 +21,38 @@ class CartProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void incrementQuantity(Product product) {
+    final index = _items.indexWhere((item) => item.title == product.title);
+    if (index >= 0) {
+      _items[index].quantity += 1;
+      notifyListeners();
+    }
+  }
+
+  void decrementQuantity(Product product) {
+    final index = _items.indexWhere((item) => item.title == product.title);
+    if (index >= 0 && _items[index].quantity > 1) {
+      _items[index].quantity -= 1;
+    } else {
+      _items.removeAt(index);
+    }
+    notifyListeners();
+  }
+
+  void clearCart() {
+    _items.clear();
+    notifyListeners();
+  }
+
   double get totalPrice {
     double total = 0.0;
     for (var item in _items) {
-      total += double.parse(item.price);
+      total += item.price * item.quantity;
     }
     return total;
+  }
+
+  int get itemCount {
+    return _items.length;
   }
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_1/providers/cart_provider.dart';
+import 'package:flutter_application_1/providers/order_provider.dart';
 import 'package:flutter_application_1/widgets/MainLayout.dart';
+import 'package:flutter_application_1/widgets/OrderCard/OrderCard.dart';
 
 class OrderScreen extends StatelessWidget {
   const OrderScreen({super.key});
@@ -9,12 +11,13 @@ class OrderScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cartProvider = context.watch<CartProvider>();
+    final orderProvider = context.watch<OrderProvider>();
     final cart = cartProvider.items;
     final total = cartProvider.totalPrice;
 
     return MainLayout(
       title: 'Orders',
-      currentIndex: 2,
+      currentIndex: 1,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: cart.isEmpty
@@ -25,38 +28,41 @@ class OrderScreen extends StatelessWidget {
                   Expanded(
                     child: ListView.builder(
                       itemCount: cart.length,
-                      itemBuilder: (context, index) {
-                        final item = cart[index];
-                        return Card(
-                          margin: const EdgeInsets.symmetric(vertical: 8),
-                          child: ListTile(
-                            leading: Image.network(
-                              item.imageUrl,
-                              width: 60,
-                              height: 60,
-                              fit: BoxFit.cover,
-                            ),
-                            title: Text(item.title),
-                            subtitle: Text(item.description),
-                            trailing: Text(
-                              item.price,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.green,
-                              ),
-                            ),
-                          ),
-                        );
-                      },
+                      itemBuilder: (context, index) =>
+                          OrderCard(item: cart[index]),
                     ),
                   ),
                   const SizedBox(height: 10),
-                  Text(
-                    'Total: \$${total.toStringAsFixed(2)}',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Total: \$${total.toStringAsFixed(2)}',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          if (cart.isEmpty) return;
+
+                          // ✅ Сохраняем заказ в историю
+                          orderProvider.addOrder(cart);
+
+                          // ✅ Очищаем корзину
+                          cartProvider.clearCart();
+
+                          // ✅ Показываем уведомление
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Order placed successfully!'),
+                            ),
+                          );
+                        },
+                        child: const Text('Place Order'),
+                      ),
+                    ],
                   ),
                 ],
               ),

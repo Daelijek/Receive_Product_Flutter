@@ -3,6 +3,7 @@ import 'package:flutter_application_1/screens/HomeScreen.dart';
 import 'package:flutter_application_1/screens/LoginScreen.dart';
 import 'package:flutter_application_1/screens/OrderScreen.dart';
 import 'package:flutter_application_1/screens/ProfileScreen.dart';
+import 'package:flutter_application_1/screens/OrderHistoryScreen.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginScreen(),
         '/orders': (context) => OrderScreen(),
         '/profile': (context) => ProfileScreen(),
+        '/order-history': (context) => OrderHistoryScreen(),
       },
     );
   }
