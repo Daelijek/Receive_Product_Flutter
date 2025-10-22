@@ -14,7 +14,18 @@ class LoginScreen extends StatelessWidget {
           padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [LoginHeader(), SizedBox(height: 40), LoginForm()],
+            children: [
+              const LoginHeader(),
+              const SizedBox(height: 40),
+              const LoginForm(),
+              TextButton(
+                onPressed: () => Navigator.pushNamed(context, '/register'),
+                child: const Text(
+                  'Don\'t have an account? Register',
+                  style: TextStyle(color: Color(0xFF1A56DB)),
+                ),
+              ),
+            ],
           ),
         ),
       ),

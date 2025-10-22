@@ -4,6 +4,7 @@ import 'package:flutter_application_1/screens/LoginScreen.dart';
 import 'package:flutter_application_1/screens/OrderScreen.dart';
 import 'package:flutter_application_1/screens/ProfileScreen.dart';
 import 'package:flutter_application_1/screens/OrderHistoryScreen.dart';
+import 'package:flutter_application_1/screens/RegistrationScreen.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => HomeScreen(),
         '/login': (context) => LoginScreen(),
+        '/register': (context) => RegistrationScreen(),
         '/orders': (context) => OrderScreen(),
         '/profile': (context) => ProfileScreen(),
         '/order-history': (context) => OrderHistoryScreen(),

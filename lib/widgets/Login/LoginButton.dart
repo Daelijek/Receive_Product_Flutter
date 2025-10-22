@@ -1,10 +1,18 @@
+// ...existing code...
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/widgets/Login/LoginForm.dart';
+import 'package:flutter_application_1/services/ApiService.dart';
 
 class LoginButton extends StatefulWidget {
   final GlobalKey<FormState> formKey;
+  final TextEditingController emailController;
+  final TextEditingController passwordController;
 
-  const LoginButton({super.key, required this.formKey});
+  const LoginButton({
+    super.key,
+    required this.formKey,
+    required this.emailController,
+    required this.passwordController,
+  });
 
   @override
   State<LoginButton> createState() => _LoginButtonState();
@@ -13,7 +21,7 @@ class LoginButton extends StatefulWidget {
 class _LoginButtonState extends State<LoginButton> {
   bool _isLoading = false;
 
-  void _login() {
+  void _login() async {
     final formState = widget.formKey.currentState;
     if (formState == null) return;
     if (!formState.validate()) return;
@@ -24,13 +32,42 @@ class _LoginButtonState extends State<LoginButton> {
       _isLoading = true;
     });
 
-    Future.delayed(const Duration(seconds: 2), () {
+    try {
+      final result = await ApiService.login(
+        widget.emailController.text,
+        widget.passwordController.text,
+      );
+
       if (!mounted) return;
-      setState(() {
-        _isLoading = false;
-      });
-      Navigator.pushReplacementNamed(context, '/');
-    });
+
+      if (result['success'] == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Login successful!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.pushReplacementNamed(context, '/');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result['error'] ?? 'Login failed'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -51,7 +88,10 @@ class _LoginButtonState extends State<LoginButton> {
                 color: Colors.white,
               ),
             )
-          : const Text('Log In', style: TextStyle(color: Colors.white, fontSize: 18)),
+          : const Text(
+              'Log In',
+              style: TextStyle(color: Colors.white, fontSize: 18),
+            ),
     );
   }
 }
