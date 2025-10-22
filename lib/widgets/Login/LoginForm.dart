@@ -1,4 +1,3 @@
-// ...existing code...
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/Login/LoginButton.dart';
 import 'package:flutter_application_1/widgets/Login/LoginInput.dart';
@@ -37,7 +36,7 @@ class _LoginFormState extends State<LoginForm> {
         children: [
           TextFormField(
             controller: _emailController,
-            decoration: const InputDecoration(labelText: 'Email'),
+            decoration: const InputDecoration(labelText: 'Username'),
             keyboardType: TextInputType.emailAddress,
             validator: (v) =>
                 (v == null || v.isEmpty) ? 'Enter your email' : null,

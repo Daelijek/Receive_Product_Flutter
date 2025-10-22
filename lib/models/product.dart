@@ -1,5 +1,5 @@
 class Product {
-  final int? id; // ID из базы данных
+  final int? id;
   final String title;
   final String description;
   final String imageUrl;
@@ -15,11 +15,10 @@ class Product {
     this.quantity = 1,
   });
 
-  // Конструктор из JSON (для API ответов)
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      id: json['id'],
-      title: json['title'] ?? json['name'] ?? '', // поддержка разных полей
+      id: json['id'] ?? json['ID'],
+      title: json['title'] ?? json['name'] ?? '',
       description: json['description'] ?? '',
       imageUrl: json['imageUrl'] ?? json['image_url'] ?? '',
       price: (json['price'] ?? 0).toDouble(),
@@ -27,7 +26,6 @@ class Product {
     );
   }
 
-  // Конвертация в JSON (для отправки на сервер)
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
@@ -39,7 +37,6 @@ class Product {
     };
   }
 
-  // Старый конструктор для обратной совместимости
   factory Product.fromMap(Map<String, dynamic> map) {
     return Product.fromJson(map);
   }

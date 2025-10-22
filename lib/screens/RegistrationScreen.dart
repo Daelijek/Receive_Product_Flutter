@@ -1,4 +1,4 @@
-// ...existing code...
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/services/ApiService.dart';
 
@@ -22,7 +22,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     setState(() => _isLoading = true);
 
     try {
-      // ...existing code...
       final result = await ApiService.register(
         _nameController.text.trim(),
         _passwordController.text,
@@ -39,22 +38,24 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         );
         Navigator.pushReplacementNamed(context, '/login');
       } else {
-        final err =
-            result['error'] ??
-            'Registration failed (status: ${result['statusCode'] ?? 'unknown'})';
+        final dynamic raw = result['error'] ?? result['data'] ?? result;
+        final String err = raw is String ? raw : jsonEncode(raw);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(err.toString()), backgroundColor: Colors.red),
+          SnackBar(content: Text(err), backgroundColor: Colors.red),
         );
       }
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        SnackBar(
+          content: Text('Error: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
       );
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
-  }
+  } 
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +92,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   },
                 ),
                 const SizedBox(height: 16),
-                // Оставил поле email — можно убрать если не нужно
                 TextFormField(
                   controller: _emailController,
                   decoration: const InputDecoration(
@@ -99,7 +99,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
-                    // если email не нужен, можно вернуть null всегда
                     if (value == null || value.isEmpty) {
                       return null;
                     }
@@ -165,4 +164,3 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     super.dispose();
   }
 }
-// ...existing code...

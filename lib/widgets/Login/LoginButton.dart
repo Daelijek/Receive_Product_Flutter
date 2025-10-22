@@ -1,4 +1,4 @@
-// ...existing code...
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/services/ApiService.dart';
 
@@ -49,17 +49,19 @@ class _LoginButtonState extends State<LoginButton> {
         );
         Navigator.pushReplacementNamed(context, '/');
       } else {
+        final dynamic raw = result['error'] ?? result['data'] ?? result;
+        final String msg = raw is String ? raw : jsonEncode(raw);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(result['error'] ?? 'Login failed'),
-            backgroundColor: Colors.red,
-          ),
+          SnackBar(content: Text(msg), backgroundColor: Colors.red),
         );
       }
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        SnackBar(
+          content: Text('Error: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
       );
     } finally {
       if (mounted) {

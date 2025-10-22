@@ -3,6 +3,7 @@ import 'package:flutter_application_1/widgets/MainLayout.dart';
 import 'package:flutter_application_1/widgets/ProductCard/ProductCard.dart';
 import 'package:flutter_application_1/services/ApiService.dart';
 import 'package:flutter_application_1/models/product.dart';
+import 'package:flutter_application_1/data/products.dart' as sample_data;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -35,24 +36,30 @@ class _HomeScreenState extends State<HomeScreen> {
       child: RefreshIndicator(
         onRefresh: () async {
           _refreshProducts();
+          try {
+            await _productsFuture;
+          } catch (_) {
+          }
         },
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: FutureBuilder<List<Product>>(
             future: _productsFuture,
             builder: (context, snapshot) {
-              // Показываем загрузку
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               }
 
-              // Показываем ошибку
               if (snapshot.hasError) {
                 return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.error_outline, size: 60, color: Colors.red),
+                      const Icon(
+                        Icons.error_outline,
+                        size: 60,
+                        color: Colors.red,
+                      ),
                       const SizedBox(height: 16),
                       Text(
                         'Error: ${snapshot.error}',
@@ -70,9 +77,9 @@ class _HomeScreenState extends State<HomeScreen> {
               }
 
               // Показываем список продуктов
-              final products = snapshot.data ?? [];
+              final dbProducts = snapshot.data ?? [];
 
-              if (products.isEmpty) {
+              if (dbProducts.isEmpty) {
                 return const Center(
                   child: Text(
                     'No products available',
@@ -81,14 +88,49 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               }
 
+              final localList = <dynamic>[];
+              try {
+                localList.addAll(sample_data.products as List<dynamic>);
+              } catch (_) {
+              }
+
               return ListView.builder(
-                itemCount: products.length,
+                itemCount: dbProducts.length,
                 itemBuilder: (context, index) {
-                  final product = products[index];
+                  final product = dbProducts[index];
+
+                  String description = '';
+                  String imageUrl = '';
+
+                  if (index < localList.length) {
+                    final local = localList[index];
+                    if (local is Map) {
+                      description = (local['description'] ?? '').toString();
+                      imageUrl = (local['imageUrl'] ?? local['image'] ?? '')
+                          .toString();
+                    } else {
+                      try {
+                        final dyn = local;
+                        description =
+                            (dyn.description ?? dyn['description'] ?? '')
+                                .toString();
+                      } catch (_) {
+                        description = '';
+                      }
+                      try {
+                        final dyn = local;
+                        imageUrl = (dyn.imageUrl ?? dyn.image ?? '').toString();
+                      } catch (_) {
+                        imageUrl = '';
+                      }
+                    }
+                  }
+
                   return ProductCard(
+                    productId: product.id,
                     title: product.title,
-                    description: product.description,
-                    imageUrl: product.imageUrl,
+                    description: description,
+                    imageUrl: imageUrl,
                     price: product.price,
                   );
                 },

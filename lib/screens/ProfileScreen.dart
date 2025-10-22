@@ -2,10 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/MainLayout.dart';
 import 'package:flutter_application_1/widgets/Profile/ProfileHeader.dart';
 import 'package:flutter_application_1/widgets/Profile/ProfileOption.dart';
+import 'package:flutter_application_1/services/ApiService.dart';
 
 class ProfileScreen extends StatelessWidget {
+  const ProfileScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
+    final username = ApiService.getCurrentUsername() ?? 'Guest';
+
     return MainLayout(
       title: 'Profile',
       currentIndex: 2,
@@ -13,10 +18,7 @@ class ProfileScreen extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            const ProfileHeader(
-              name: 'Dias Yermek',
-              email: 'dias.yermek@gmail.com',
-            ),
+            ProfileHeader(name: username, email: ''),
             Expanded(
               child: ListView(
                 children: [
