@@ -47,13 +47,10 @@ class OrderScreen extends StatelessWidget {
                         onPressed: () {
                           if (cart.isEmpty) return;
 
-                          // ✅ Сохраняем заказ в историю
                           orderProvider.addOrder(cart);
 
-                          // ✅ Очищаем корзину
                           cartProvider.clearCart();
 
-                          // ✅ Показываем уведомление
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text('Order placed successfully!'),

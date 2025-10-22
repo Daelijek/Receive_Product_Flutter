@@ -47,12 +47,6 @@ class _MainLayoutState extends State<MainLayout> {
           Stack(
             alignment: Alignment.center,
             children: [
-              IconButton(
-                icon: const Icon(Icons.shopping_cart),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/orders');
-                },
-              ),
               if (cartCount > 0)
                 Positioned(
                   right: 8,

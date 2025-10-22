@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
       title: 'My App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.blue),
-      initialRoute: '/',
+      initialRoute: '/login',
       routes: {
         '/': (context) => HomeScreen(),
         '/login': (context) => LoginScreen(),
